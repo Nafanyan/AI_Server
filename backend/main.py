@@ -1,5 +1,5 @@
 from flask import Flask
-from web_server.routes import init_routes
+import web_server.routes as routes
 from flasgger import Swagger
 
 def create_app():
@@ -7,7 +7,7 @@ def create_app():
     app = Flask(__name__)
     
     # Регистрация всех маршрутов
-    init_routes(app)
+    routes.init_routes(app)
 
     # Инициализация Swagger после регистрации Blueprint
     swagger = Swagger(app)

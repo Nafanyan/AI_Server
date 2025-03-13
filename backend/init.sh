@@ -6,13 +6,16 @@ if ! command -v python3.12 &>/dev/null; then
     echo "Python 3.12.6 не установлен."
     exit 1
 fi
+
 python3.12 -m venv .venv
 source .venv/bin/activate
 echo "\033[32mАктивация виртуального окружения\033[0m"
 
+command pip install --upgrade pip
 
 # Устанавливаем зависимости из файла requirements.txt
 echo "\033[32mУстановка общих зависимостей веб сервера\033[0m"
+pip cache purge
 pip install -r requirements.txt
 
 
@@ -30,10 +33,9 @@ else
 fi
 echo "\033[32mУсановка модели yolov5 и её зависимостей завершена\033[0m"
 
-
 echo "\033[32mВиртуальная среда создана и активирована!\033[0m"
 
 # Запускаем сервер
-echo "\033[32mЗапуск сервера!\033[0m"
+echo "\033[32mНастройка приложения завершена!\033[0m"
 cd ./../../
-python main.py
+sh start.sh

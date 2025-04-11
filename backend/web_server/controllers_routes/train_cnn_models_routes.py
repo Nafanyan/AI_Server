@@ -2,7 +2,7 @@ import os
 from flask import Blueprint, request, jsonify, send_file
 
 from application.ai_model_trainers.CnnTrainer import CnnTrainer
-from application.ai_models.ai_models import AI_Model_Name, AI_Model_Type
+from application.ai_models.ai_models import CNN_Model_Name, AI_Model_Type
 
 train_cnn_models_bp = Blueprint(
     'train-cnn-model',
@@ -88,7 +88,7 @@ def train_model():
 
         trainer = CnnTrainer()
         model_path = trainer.train(
-            getattr(AI_Model_Name, ai_model.upper()),
+            getattr(CNN_Model_Name, ai_model.upper()),
             img_size,
             batch_size,
             epochs_num,

@@ -2,8 +2,11 @@ from enum import Enum
 from datetime import datetime
 import application.paths as paths
 
-class AI_Model_Name(Enum):
+class CNN_Model_Name(Enum):
     YOLOV5 = 1
+
+class LNN_Model_Name(Enum):
+    Binary = 1
 
 class AI_Model_Type():
     CNN = 0

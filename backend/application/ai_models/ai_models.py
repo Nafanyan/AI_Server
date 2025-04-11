@@ -7,6 +7,7 @@ class CNN_Model_Name(Enum):
 
 class LNN_Model_Name(Enum):
     Binary = 1
+    Multiple = 2
 
 class AI_Model_Type():
     CNN = 0

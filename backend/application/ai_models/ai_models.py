@@ -2,16 +2,25 @@ from enum import Enum
 from datetime import datetime
 import application.paths as paths
 
-class AI_Model_Name(Enum):
+class CNN_Model_Name(Enum):
     YOLOV5 = 1
+
+class LNN_Model_Name(Enum):
+    Binary = 1
+    Multiple = 2
 
 class AI_Model_Type():
     CNN = 0
+    LNN = 1
     __string_CNN = 'cnn'
+    __string_LNN = 'lnn'
 
     def convert_to_string_try_get(model_type):
         if (int)(model_type) == AI_Model_Type.CNN:
             return True, AI_Model_Type.__string_CNN
+
+        if (int)(model_type) == AI_Model_Type.LNN:
+            return True, AI_Model_Type.__string_LNN
 
         return False, 'unknown'
     
@@ -20,6 +29,9 @@ class AI_Model_Type():
 
         trained_model_name_for_save = f'{trained_model_name}_{datetime.now().strftime("%Y-%m-%d %H:%M")}'.replace(' ', '')
         return f'{paths.get_models_folder_path(user_name, ai_model_type_string)}/{trained_model_name_for_save}'
+    
+
+
 
 
 

@@ -10,7 +10,22 @@ def create_app():
     routes.init_routes(app)
 
     # Инициализация Swagger после регистрации Blueprint
-    swagger = Swagger(app)
+    swagger_config = {
+        "headers": [],
+        "specs": [
+            {
+                "endpoint": 'apispec',
+                "route": '/apispec.json',
+                "rule_filter": lambda rule: True,
+                "model_filter": lambda tag: True,
+            }
+        ],
+        "static_url_path": "/flasgger_static",
+        "swagger_ui": True,
+        "specs_route": "/api/doc/"
+        }
+    
+    swagger = Swagger(app, config=swagger_config)
 
     return app
 

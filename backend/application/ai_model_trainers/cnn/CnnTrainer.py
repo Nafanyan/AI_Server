@@ -64,17 +64,19 @@ class CNN_Trainer:
         train_size = int(total_size * train_percentage * 0.01)
         test_size = int(total_size * test_percentage * 0.01)
 
-        self.train_data = tf.data.Dataset.from_tensor_slices((data[:train_size], labels[:train_size]))
+        train_data, test_data, valid_data = np.split(data, [train_size, train_size + test_size])
+        train_labels, test_labels, valid_labels = np.split(encoded_labels, [train_size, train_size + test_size])
+
+        self.train_data = tf.data.Dataset.from_tensor_slices((train_data, train_labels))
         self.train_data = self.train_data.map(self.process_path).batch(self.batch_size)
 
-        self.test_data = tf.data.Dataset.from_tensor_slices((data[train_size:train_size+test_size], labels[:train_size+test_size]))
+        self.test_data = tf.data.Dataset.from_tensor_slices((test_data, test_labels))
         self.test_data =  self.test_data.map(self.process_path).batch(self.batch_size)
 
-        self.valid_data = tf.data.Dataset.from_tensor_slices((data[-test_size:], labels[-test_size:]))
+        self.valid_data = tf.data.Dataset.from_tensor_slices((valid_data, valid_labels))
         self.valid_data =  self.valid_data.map(self.process_path).batch(self.batch_size)
 
-        self.train_data, self.test_data, self.valid_data = np.split(data, [train_size, train_size + test_size])
-        self.train_labels, self.test_labels, self.valid_labels = np.split(encoded_labels, [train_size, train_size + test_size])
+
 
     def train_and_save(self, trained_model_name):
         # Запуск обучения
@@ -196,9 +198,9 @@ class CNN_Trainer:
         # Преобразуем списки в numpy массивы
         return np.array(data), np.array(labels)
 
-    def process_path(file_path, label):
+    def process_path(self, file_path, label):
         img = tf.io.read_file(file_path)
-        img = tf.image.decode_png(img, channels=3)
+        img = tf.image.decode_image(img, channels=3, expand_animations=False)
         img = tf.image.resize(img, [180, 180])
         img = img / 255.0
         return img, label

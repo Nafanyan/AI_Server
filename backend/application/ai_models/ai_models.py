@@ -1,9 +1,10 @@
 from enum import Enum
 from datetime import datetime
-import application.paths as paths
+import application.config_paths as config_paths
 
 class CNN_Model_Name(Enum):
-    YOLOV5 = 1
+    Binary = 1
+    Multiple = 2
 
 class LNN_Model_Name(Enum):
     Binary = 1
@@ -28,7 +29,7 @@ class AI_Model_Type():
         _, ai_model_type_string = AI_Model_Type.convert_to_string_try_get(ai_model_type)
 
         trained_model_name_for_save = f'{trained_model_name}_{datetime.now().strftime("%Y-%m-%d %H:%M")}'.replace(' ', '')
-        return f'{paths.get_models_folder_path(user_name, ai_model_type_string)}/{trained_model_name_for_save}'
+        return f'{config_paths.get_models_folder_path(user_name, ai_model_type_string)}/{trained_model_name_for_save}'
     
 
 

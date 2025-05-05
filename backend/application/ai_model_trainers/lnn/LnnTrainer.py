@@ -6,7 +6,7 @@ from tensorflow.keras import layers
 from tensorflow.keras.callbacks import EarlyStopping
 
 import numpy as np
-from application import paths
+from application import config_paths
 from application.results.Result import Result
 from application.ai_model_trainers.get_last_version import get_last_version_model
 from application.services import data_storage_services
@@ -36,7 +36,7 @@ class LNN_Trainer:
         self.dataset_name = dataset_name
 
         # Путь к датасету необходимому для обучения
-        self.dataset_folder_path = paths.get_dataset_path(self.user_name, self.dataset_name).replace('.zip', '')
+        self.dataset_folder_path = config_paths.get_dataset_path(self.user_name, self.dataset_name).replace('.zip', '')
 
         # Донастройка нейронной сети в зависимости от её типа: бинарная, либо многоклассовая
         self.__init_last_element_in_init_activations(ai_model)
@@ -70,7 +70,7 @@ class LNN_Trainer:
         
         return self.save_model(trained_model_name, model, history)
     
-    def train(self, trained_model_name):
+    def train(self):
         isSuccess, msg = self.__validate_parameters()
         if not isSuccess:
             return  Result(None, msg)

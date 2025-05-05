@@ -2,7 +2,7 @@ import os
 import configurations.config as config
 
 def get_root_path():
-    return f'{os.path.abspath('./')}/{'AI_Server/backend'}'
+    return f'{os.path.abspath('./')}/{'/backend'}'
 
 def get_datasets_folder_path(user_name):
     return f'{config.get_storage_configuration_datasets_path()}/{user_name}'

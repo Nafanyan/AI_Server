@@ -4,7 +4,7 @@ import zipfile
 
 from application.ai_models.ai_models import AI_Model_Type
 from application.results.Result import Result
-from application import paths
+from application import config_paths
 
 def create_dataset_zip(user_name, filename, file):
     """
@@ -16,7 +16,7 @@ def create_dataset_zip(user_name, filename, file):
     """
     # Распаковываем архив
     try:
-        return __save_zip_and_extracted_file(paths.get_datasets_folder_path(user_name), filename, file)
+        return __save_zip_and_extracted_file(config_paths.get_datasets_folder_path(user_name), filename, file)
     
     except zipfile.BadZipFile:
         return Result(None, f'Error: The uploaded file is not a valid ZIP archive: {str(e)}')
@@ -31,7 +31,7 @@ def get_dataset_names(user_name):
     :return: Ответ сервера
     """
     # Указываем путь к папке
-    datasets_folder_path = paths.get_datasets_folder_path(user_name)
+    datasets_folder_path = config_paths.get_datasets_folder_path(user_name)
 
     if not os.path.isdir(datasets_folder_path):
         return Result(None, "Datasets for User is not exist")
@@ -45,7 +45,7 @@ def get_dataset_names(user_name):
 
 def get_dataset_by_name(user_name, dataset_name):
     zip_filename = f'{dataset_name}.zip'
-    path_to_zip = paths.get_dataset_path(user_name, zip_filename)
+    path_to_zip = config_paths.get_dataset_path(user_name, zip_filename)
 
     # Проверяем существование файла
     if not os.path.exists(path_to_zip):
@@ -54,12 +54,12 @@ def get_dataset_by_name(user_name, dataset_name):
     return Result(path_to_zip, None)
 
 def delete_dataset_by_name(user_name, dataset_name):
-    return __delete_zip_and_extract_folder(paths.get_models_folder_path(user_name), dataset_name)
+    return __delete_zip_and_extract_folder(config_paths.get_models_folder_path(user_name), dataset_name)
 
 def create_model_zip(user_name, ai_model_type, filename, file):
     try:
         _, ai_model_type_string = AI_Model_Type.convert_to_string_try_get(ai_model_type)
-        return __save_zip_and_extracted_file(paths.get_models_folder_path(user_name, ai_model_type_string), filename, file)
+        return __save_zip_and_extracted_file(config_paths.get_models_folder_path(user_name, ai_model_type_string), filename, file)
     
     except zipfile.BadZipFile:
         return Result(None, f'Error: The created file is not a valid ZIP archive: {str(e)}')
@@ -69,7 +69,7 @@ def create_model_zip(user_name, ai_model_type, filename, file):
 def get_model_names(user_name, ai_model_type):
     # Указываем путь к папке
     _, ai_model_type_string = AI_Model_Type.convert_to_string_try_get(ai_model_type)
-    models_folder_path = paths.get_models_folder_path(user_name, ai_model_type_string)
+    models_folder_path = config_paths.get_models_folder_path(user_name, ai_model_type_string)
 
     if not os.path.isdir(models_folder_path):
         return Result(None, "Models for User is not exist")
@@ -84,7 +84,7 @@ def get_model_names(user_name, ai_model_type):
 def get_model_by_name(user_name, ai_model_type, model_name):
     zip_filename = f'{model_name}.zip'
     _, ai_model_type_string = AI_Model_Type.convert_to_string_try_get(ai_model_type)
-    path_to_zip = paths.get_model_path(user_name, ai_model_type_string, zip_filename)
+    path_to_zip = config_paths.get_model_path(user_name, ai_model_type_string, zip_filename)
 
     # Проверяем существование файла
     if not os.path.exists(path_to_zip):
@@ -94,7 +94,7 @@ def get_model_by_name(user_name, ai_model_type, model_name):
 
 def delete_model_by_name(user_name, ai_model_type, model_name):
     _, ai_model_type_string = AI_Model_Type.convert_to_string_try_get(ai_model_type)
-    return __delete_zip_and_extract_folder(paths.get_models_folder_path(user_name, ai_model_type_string), model_name)
+    return __delete_zip_and_extract_folder(config_paths.get_models_folder_path(user_name, ai_model_type_string), model_name)
 
 def __save_zip_and_extracted_file(file_folder, filename, file):
     with zipfile.ZipFile(file) as archive:

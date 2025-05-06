@@ -11,7 +11,7 @@ from application.results.Result import Result
 from application.ai_model_trainers.get_last_version import get_last_version_model
 from application.services import data_storage_services
 from application.services.zip_archive_service import create_zip_archive
-from application.ai_models.ai_models import LNN_Model_Name, AI_Model_Type
+from application.ai_models.ai_models import Model_Classification_Type, AI_Model_Type
 
 class LNN_Trainer:
     def __init__(            
@@ -139,20 +139,20 @@ class LNN_Trainer:
         plt.savefig(f'{save_folder}/accuracy_plot.png', dpi=300)
 
     def __init_last_element_in_init_activations(self, ai_model):
-        if ai_model == LNN_Model_Name.Binary:
+        if ai_model == Model_Classification_Type.Binary:
             self.activations.append('sigmoid')
             return
         
         self.activations.append('softmax')
 
     def __init_loss(self, ai_model):
-        if ai_model == LNN_Model_Name.Binary:
+        if ai_model == Model_Classification_Type.Binary:
             return 'binary_crossentropy'
         
         return 'categorical_crossentropy'
 
     def __init_last_element_in_neurons_in_layers(self, ai_model):
-        if ai_model == LNN_Model_Name.Binary:
+        if ai_model == Model_Classification_Type.Binary:
             self.neurons_in_layers.append(1)
             return
         
@@ -192,7 +192,7 @@ class LNN_Trainer:
     def __get_encode_labels(self, ai_model, labels):
         _, inverse_indices = np.unique(labels, return_inverse=True)
         encoded_labels = inverse_indices
-        if ai_model == LNN_Model_Name.Binary:
+        if ai_model == Model_Classification_Type.Binary:
             return encoded_labels
         
         return self.__to_one_hot(encoded_labels, len(self.__get_quantity_classes()))

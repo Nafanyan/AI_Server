@@ -23,9 +23,9 @@ def train_model():
       - name: ai_model
         in: formData
         type: string
-        enum: ['binary_crossentropy', 'categorical_crossentropy']
+        enum: ['binary_classification', 'multiple_classification']
         required: true
-        description: Тип модели. Для бинарной классификации binary_crossentropy, а для многоклассовой categorical_crossentropy
+        description: Тип модели. Для бинарной классификации binary_classification, а для многоклассовой multiple_classification
       - name: img_size
         in: formData
         type: integer

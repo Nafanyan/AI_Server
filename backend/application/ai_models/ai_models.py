@@ -2,11 +2,7 @@ from enum import Enum
 from datetime import datetime
 import application.config_paths as config_paths
 
-class CNN_Model_Name(Enum):
-    Binary = 1
-    Multiple = 2
-
-class LNN_Model_Name(Enum):
+class Model_Classification_Type(Enum):
     Binary = 1
     Multiple = 2
 

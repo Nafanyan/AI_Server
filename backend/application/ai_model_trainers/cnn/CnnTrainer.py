@@ -12,7 +12,7 @@ from application.results.Result import Result
 from application.ai_model_trainers.get_last_version import get_last_version_model
 from application.services import data_storage_services
 from application.services.zip_archive_service import create_zip_archive
-from application.ai_models.ai_models import CNN_Model_Name, AI_Model_Type
+from application.ai_models.ai_models import Model_Classification_Type, AI_Model_Type
 
 class CNN_Trainer:
     def __init__(            
@@ -76,8 +76,6 @@ class CNN_Trainer:
         self.valid_data = tf.data.Dataset.from_tensor_slices((valid_data, valid_labels))
         self.valid_data =  self.valid_data.map(self.process_path).batch(self.batch_size)
 
-
-
     def train_and_save(self, trained_model_name):
         # Запуск обучения
         model, history, _, _ = self.__train()
@@ -106,15 +104,14 @@ class CNN_Trainer:
         return data_storage_services.get_model_by_name(self.user_name, AI_Model_Type.LNN, latest_version)
 
     def __train(self):
-        inputs = keras.Input(shape=(self.img, 180, 3))
+        inputs = keras.Input(shape=(self.img_size, 180, 3))
         x = layers.Rescaling(1./255)(inputs)
 
-        model_layers = []
-        for i in range(len(self.filters)) - 2:
-            x = layers.Conv2D(filters=self.filters[i], kernel_size=self.kernel_size[i], activation=self.activations[i])(x)
-            x = layers.MaxPooling2D(pool_size=self.pool_size[i])(x)
+        for i in range(len(self.filters) - 2):
+            x = layers.Conv2D(filters=self.filters[i], kernel_size=self.kernel_sizes[i], activation=self.activations[i])(x)
+            x = layers.MaxPooling2D(pool_size=self.pool_sizes[i])(x)
 
-        x = layers.Conv2D(filters=self.filters[-2], kernel_size=self.kernel_size[-2], activation=self.activations[-2])(x)
+        x = layers.Conv2D(filters=self.filters[-2], kernel_size=self.kernel_sizes[-2], activation=self.activations[-2])(x)
         x = layers.Flatten()(x)
 
         outputs = layers.Dense(self.filters[-1], activation=self.activations[-1])(x)
@@ -125,15 +122,23 @@ class CNN_Trainer:
                     loss=self.loss,
                     metrics=["accuracy"])
         
-        early_stopping = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
+        callbacks = [
+            keras.callbacks.ModelCheckpoint(
+                filepath='convert_from_scratch.keras',
+                save_best_only=True,
+                monitor='val_loss'
+            )
+        ]
+
         history = model.fit(
-                            self.train_data,
-                            self.train_labels,
-                            epochs=self.epochs,
-                            batch_size=self.batch_size,
-                            validation_data = (self.valid_data, self.valid_labels),
-                            callbacks=[early_stopping])
-        test_loss, test_acc = model.evaluate(self.test_data, self.test_labels)
+            self.train_data,
+            epochs=self.epochs,
+            validation_data=self.valid_data,
+            callbacks=callbacks
+        )
+
+        test_model = keras.models.load_model('convert_from_scratch.keras')
+        test_loss, test_acc = test_model.evaluate(self.test_data)
 
         return model, history, test_loss, test_acc
     
@@ -158,20 +163,20 @@ class CNN_Trainer:
         plt.savefig(f'{save_folder}/accuracy_plot.png', dpi=300)
 
     def __init_last_element_in_init_activations(self, ai_model):
-        if ai_model == CNN_Model_Name.Binary:
+        if ai_model == Model_Classification_Type.Binary:
             self.activations.append('sigmoid')
             return
         
         self.activations.append('softmax')
 
     def __init_loss(self, ai_model):
-        if ai_model == CNN_Model_Name.Binary:
+        if ai_model == Model_Classification_Type.Binary:
             return 'binary_crossentropy'
         
         return 'categorical_crossentropy'
 
     def __init_last_element_in_neurons_in_layers(self, ai_model):
-        if ai_model == CNN_Model_Name.Binary:
+        if ai_model == Model_Classification_Type.Binary:
             self.filters.append(1)
             return
         
@@ -217,7 +222,7 @@ class CNN_Trainer:
     def __get_encode_labels(self, ai_model, labels):
         _, inverse_indices = np.unique(labels, return_inverse=True)
         encoded_labels = inverse_indices
-        if ai_model == CNN_Model_Name.Binary:
+        if ai_model == Model_Classification_Type.Binary:
             return encoded_labels
         
         return self.__to_one_hot(encoded_labels, len(self.__get_quantity_classes()))

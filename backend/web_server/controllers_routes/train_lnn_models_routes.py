@@ -1,9 +1,9 @@
 import os
 from flask import Blueprint, abort, request, jsonify, send_file
 
-from application.ai_model_trainers.LnnOptimizeTrainer import LnnOptimizeTrainer
+from application.ai_model_trainers.lnn.LnnOptimizeTrainer import LnnOptimizeTrainer
 from application.ai_models.AiModelNameConverter import AiModelNameConverter
-from application.ai_model_trainers.LnnTrainer import LNN_Trainer
+from application.ai_model_trainers.lnn.LnnTrainer import LNN_Trainer
 
 train_lnn_models_bp = Blueprint(
     'train-lnn-model',
@@ -54,21 +54,6 @@ def train_model():
         enum: ['sgd', 'rmsprop', 'adam', 'adadelta', 'adamax', 'nadam', 'ftrl']
         required: true
         description: Функция оптимизации
-      - name: user_name
-        in: formData
-        type: string
-        required: true
-        description: Имя пользователя
-      - name: dataset_name
-        in: formData
-        type: string
-        required: true
-        description: Название датасета
-      - name: trained_model_name
-        in: formData
-        type: string
-        required: true
-        description: Имя для обучаемой модели
       - name: train_percentage
         in: formData
         type: number
@@ -85,6 +70,21 @@ def train_model():
         maximum: 100
         required: true
         description: Процентное соотношение проверочной выборки от общего набора данных
+      - name: user_name
+        in: formData
+        type: string
+        required: true
+        description: Имя пользователя
+      - name: dataset_name
+        in: formData
+        type: string
+        required: true
+        description: Название датасета
+      - name: trained_model_name
+        in: formData
+        type: string
+        required: true
+        description: Имя для обучаемой модели
     responses:
       200:
         description: Model training parameters received
@@ -103,6 +103,7 @@ def train_model():
     trained_model_name = request.form.get('trained_model_name')
     train_percentage = int(request.form.get('train_percentage'))
     test_percentage = int(request.form.get('test_percentage'))
+    
     try:
       trainer = LNN_Trainer(
          AiModelNameConverter.convert(ai_model.lower()),
@@ -133,7 +134,7 @@ def train_model():
 @train_lnn_models_bp.route('/optimize-train', methods=['POST'])
 def optimize_train_model():
     """
-    Обучение линейной модели нейронной сети
+    Поиск наилучшей обученной модели в заданном периоде параметров
     ---
     tags:
       - Training LNN
@@ -226,7 +227,7 @@ def optimize_train_model():
     try:
         # Создаем экземпляр тренера с новыми параметрами
         trainer = LnnOptimizeTrainer(
-            ai_model=AiModelNameConverter.convert(ai_model.lower()),
+            AiModelNameConverter.convert(ai_model.lower()),
             epochs=epochs,
             hidden_layers=hidden_layers,
             batch_sizes=batch_sizes,

@@ -1,6 +1,6 @@
 import os
 import json
-from application import paths
+from application import config_paths
 
 def get_storage_configuration_datasets_path():
     config = __get_config()
@@ -16,7 +16,7 @@ def __get_config():
     
     # Формируем путь до нужного конфигурационного файла
     config_file_name = f'configurations/appsettings.{environment}.json'
-    config_path = f'{paths.get_root_path()}/{config_file_name}'
+    config_path = f'{config_paths.get_root_path()}/{config_file_name}'
     
     try:
         with open(config_path, 'r') as file:

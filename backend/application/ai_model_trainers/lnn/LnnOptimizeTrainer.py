@@ -1,7 +1,7 @@
 import itertools
 import logging
 
-from application.ai_model_trainers.LnnTrainer import LNN_Trainer
+from application.ai_model_trainers.lnn.LnnTrainer import LNN_Trainer
 
 # Настройка модуля логирования
 logging.basicConfig(

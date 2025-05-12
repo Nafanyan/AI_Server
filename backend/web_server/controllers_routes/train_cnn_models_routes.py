@@ -15,7 +15,7 @@ train_cnn_models_bp = Blueprint(
 @train_cnn_models_bp.route('/train', methods=['POST'])
 def train_model():
     """
-    Обучение линейной модели нейронной сети
+    Обучение сверточной модели нейронной сети
     ---
     tags:
       - Training CNN

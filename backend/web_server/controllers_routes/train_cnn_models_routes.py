@@ -1,3 +1,4 @@
+import logging
 import os
 from flask import Blueprint, abort, request, jsonify, send_file
 
@@ -5,6 +6,18 @@ from application.ai_models.AiModelNameConverter import AiModelNameConverter
 from application.ai_model_trainers.cnn.CnnTrainerYolov5 import CnnTrainerYolov5
 from application.ai_models.AiModelNameConverter import AiModelNameConverter
 from application.ai_model_trainers.cnn.CnnTrainer import CNN_Trainer
+
+# Настройка модуля логирования
+logging.basicConfig(
+    filename='app.log',      # Имя файла журнала
+    filemode='a',            # Открытие файла для добавления записей ('w' — перезапись)
+    format='%(asctime)s %(levelname)-8s %(message)s',
+    level=logging.error,
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
+
+def log_message(message):
+    logging.error(message)
 
 train_cnn_models_bp = Blueprint(
     'train-cnn-model',
@@ -154,7 +167,7 @@ def train_model():
         as_attachment=True,
         download_name=os.path.basename(trained_model.result))
     except Exception as ex:
-      print(ex)
+      log_message(ex)
       abort(500, "Произошла внутренняя ошибка сервера.")
 
 @train_cnn_models_bp.route('/train/yolo5', methods=['POST'])
@@ -253,5 +266,5 @@ def train_model_yolo5():
         as_attachment=True,
         download_name=os.path.basename(trained_model.result))
     except Exception as ex:
-      print(ex)
+      log_message(ex)
       abort(500, "Произошла внутренняя ошибка сервера.")

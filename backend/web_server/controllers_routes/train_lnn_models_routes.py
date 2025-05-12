@@ -1,9 +1,22 @@
+import logging
 import os
 from flask import Blueprint, abort, request, jsonify, send_file
 
 from application.ai_model_trainers.lnn.LnnOptimizeTrainer import LnnOptimizeTrainer
 from application.ai_models.AiModelNameConverter import AiModelNameConverter
 from application.ai_model_trainers.lnn.LnnTrainer import LNN_Trainer
+
+# Настройка модуля логирования
+logging.basicConfig(
+    filename='app.log',      # Имя файла журнала
+    filemode='a',            # Открытие файла для добавления записей ('w' — перезапись)
+    format='%(asctime)s %(levelname)-8s %(message)s',
+    level=logging.error,
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
+
+def log_message(message):
+    logging.error(message)
 
 train_lnn_models_bp = Blueprint(
     'train-lnn-model',
@@ -85,6 +98,12 @@ def train_model():
         type: string
         required: true
         description: Имя для обучаемой модели
+      - name: is_create_app
+        in: formData
+        type: string
+        enum: ['yes', 'no']
+        required: true
+        description: Стоит ли создавать приложение по обученной модели
     responses:
       200:
         description: Model training parameters received
@@ -103,6 +122,7 @@ def train_model():
     trained_model_name = request.form.get('trained_model_name')
     train_percentage = int(request.form.get('train_percentage'))
     test_percentage = int(request.form.get('test_percentage'))
+    is_create_app = (bool)(request.form.get('is_create_app'))
     
     try:
       trainer = LNN_Trainer(
@@ -116,7 +136,7 @@ def train_model():
          dataset_name,
          train_percentage,
          test_percentage)
-      trained_model = trainer.train_and_save(trained_model_name)
+      trained_model = trainer.train_and_save(trained_model_name, is_create_app)
 
       if not trained_model.isSuccess:
          return jsonify({'error': f'{trained_model.errors}'}), 400
@@ -127,7 +147,7 @@ def train_model():
         as_attachment=True,
         download_name=os.path.basename(trained_model.result))
     except Exception as ex:
-      print(ex)
+      log_message(ex)
       abort(500, "Произошла внутренняя ошибка сервера.")
 
 
@@ -204,6 +224,12 @@ def optimize_train_model():
         type: string
         required: true
         description: Имя для обучаемой модели
+      - name: is_create_app
+        in: formData
+        type: string
+        enum: ['yes', 'no']
+        required: true
+        description: Стоит ли создавать приложение по обученной модели
     responses:
       200:
         description: Model training parameters received
@@ -224,6 +250,8 @@ def optimize_train_model():
     activation_functions = request.form.get('activation_functions').split(',')
     optimizers = request.form.get('optimizers').split(',')
 
+    is_create_app = (bool)(request.form.get('is_create_app'))
+
     try:
         # Создаем экземпляр тренера с новыми параметрами
         trainer = LnnOptimizeTrainer(
@@ -240,7 +268,7 @@ def optimize_train_model():
         )
         
         # Запускаем обучение
-        trained_model = trainer.optimize_train()
+        trained_model = trainer.optimize_train(trained_model_name, is_create_app)
 
         if not trained_model.isSuccess:
             return jsonify({'error': f'{trained_model.errors}'}), 400
@@ -252,5 +280,5 @@ def optimize_train_model():
             download_name=os.path.basename(trained_model.result))
 
     except Exception as ex:
-        print(ex)
+        log_message(ex)
         abort(500, "Произошла внутренняя ошибка сервера.")

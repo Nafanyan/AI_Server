@@ -26,7 +26,6 @@ class LnnOptimizeTrainer:
             activation_functions,
             optimizers,
             user_name,
-            trained_model_name,
             dataset_name):
         self.ai_model = ai_model
 
@@ -38,12 +37,11 @@ class LnnOptimizeTrainer:
         self.optimizers = optimizers
 
         self.user_name = user_name
-        self.trained_model_name = trained_model_name
         self.dataset_name = dataset_name
 
         self.total_count = 0
 
-    def optimize_train(self):
+    def optimize_train(self, trained_model_name, is_create_app):
         self.best_trained_model = None
         self.history = None
         self.trainer = None
@@ -78,7 +76,7 @@ class LnnOptimizeTrainer:
             log_message(ex)
         finally:
             log_message(f'Total count {self.total_count}')
-            return self.trainer.save_model(self.trained_model_name, self.best_trained_model, self.history)
+            return self.best_trained_model.save_model(trained_model_name, self.best_trained_model, self.history, is_create_app)
 
     def __iteration_for_optimizers(self, neurons_in_layers, activations):
         for optimizer in self.optimizers:

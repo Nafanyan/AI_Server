@@ -6,6 +6,8 @@ from tensorflow.keras import layers
 from tensorflow.keras.callbacks import EarlyStopping
 
 import numpy as np
+from application.create_app import create_app
+from application.create_app.create_app import build_exe_with_class_names
 from application import config_paths
 from application.results.Result import Result
 from application.ai_model_trainers.get_last_version import get_last_version_model
@@ -44,10 +46,10 @@ class LNN_Trainer:
         self.__init_last_element_in_neurons_in_layers(ai_model)
 
         # Получение всей выборки данных
-        data, labels = self.__get_data()
+        data, self.labels = self.__get_data()
 
         # Кодирование labels
-        encoded_labels = self.__get_encode_labels(ai_model, labels)
+        encoded_labels = self.__get_encode_labels(ai_model, self.labels)
 
         # Деление на тренировочную, тестовую и проверочную
         if train_percentage + test_percentage > 100:
@@ -60,15 +62,15 @@ class LNN_Trainer:
         self.train_data, self.test_data, self.valid_data = np.split(data, [train_size, train_size + test_size])
         self.train_labels, self.test_labels, self.valid_labels = np.split(encoded_labels, [train_size, train_size + test_size])
 
-    def train_and_save(self, trained_model_name):
+    def train_and_save(self, trained_model_name, is_create_app):
         isSuccess, msg = self.__validate_parameters()
         if not isSuccess:
-            return  Result(None, msg)
+            return Result(None, msg)
     
         # Запуск обучения
         model, history, _, _ = self.__train()
         
-        return self.save_model(trained_model_name, model, history)
+        return self.save_model(trained_model_name, model, history, is_create_app)
     
     def train(self):
         isSuccess, msg = self.__validate_parameters()
@@ -80,15 +82,25 @@ class LNN_Trainer:
 
         return model, history, test_loss, test_acc
     
-    def save_model(self, trained_model_name, model, history):
+    def save_model(self, trained_model_name, model, history, is_create_app):
         # Создание директории, в которую будет сохраняться модель
         trained_ai_model_folder_path = AI_Model_Type.get_name_for_trained_model(self.user_name, AI_Model_Type.LNN, trained_model_name)
         if not os.path.exists(trained_ai_model_folder_path):
             os.makedirs(trained_ai_model_folder_path)
 
         # Сохранение обученной модели
-        model.save(f'{trained_ai_model_folder_path}/{trained_model_name}.h5')
+        model_path = f'{trained_ai_model_folder_path}/{trained_model_name}.h5'
+        model.save(model_path)
         self.__create_plots(history, trained_ai_model_folder_path)
+
+        # Если нужно создать приложение
+        if is_create_app:
+            build_exe_with_class_names(
+                list(set(self.labels)),
+                base_script_path=create_app.current_file_path,
+                model_path=model_path,
+                exe_name="App.exe",
+                dist_path=trained_ai_model_folder_path)
 
         _, latest_version = get_last_version_model(self.user_name, AI_Model_Type.LNN, trained_model_name)
         create_zip_archive(trained_ai_model_folder_path)

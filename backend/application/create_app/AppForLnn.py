@@ -5,7 +5,7 @@ import numpy as np
 from tensorflow.keras.models import load_model
 from PIL import Image
 
-class AppForLnn:
+class AppLnn:
     def __init__(self, root, class_names, file_extension, data_type):
         self.root = root
         self.class_names = class_names
@@ -121,5 +121,5 @@ if __name__ == "__main__":
     file_extension = '.txt'
     data_type = 'text'
     root = tk.Tk()
-    app = AppForLnn(root, class_names, file_extension, data_type)
+    app = AppLnn(root, class_names, file_extension, data_type)
     root.mainloop()

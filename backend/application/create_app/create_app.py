@@ -2,9 +2,10 @@ import os
 import sys
 import tempfile
 import subprocess
-import shutil
 
-def build_exe_with_class_names(class_names, base_script_path, model_path, exe_name="App.exe", dist_path=r"C:\Users\ilya.aleksandrov\Documents\AI_Server\backend\application\ai_model_trainers\create_app"):
+current_file_path = __file__
+
+def build_exe_with_class_names(class_names, base_script_path, model_path, exe_name, dist_path):
     """
     Создает .exe с заданным class_names, генерируя временный скрипт и вызывая PyInstaller.
 
@@ -37,7 +38,7 @@ def build_exe_with_class_names(class_names, base_script_path, model_path, exe_na
             f.write(code_new)
 
         # Формируем параметр --add-data для PyInstaller (Windows)
-        add_data = f"{model_path};."
+        add_data = f"{model_path}:."
 
         # Запускаем PyInstaller
         cmd = [
@@ -56,11 +57,3 @@ def build_exe_with_class_names(class_names, base_script_path, model_path, exe_na
             print("Ошибка при сборке:")
             print(result.stdout)
             print(result.stderr)
-
-# Пример вызова:
-build_exe_with_class_names(
-    ['шум', 'сигнал'],
-    base_script_path=r"C:\Users\ilya.aleksandrov\Documents\AI_Server\backend\application\create_app\AppForLnn.py",
-    model_path=r"C:\Users\ilya.aleksandrov\Documents\AI_Server\backend\application\create_app\model.h5",
-    exe_name="MyRecognizer.exe"
-)

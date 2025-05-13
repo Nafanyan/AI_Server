@@ -6,7 +6,6 @@ from tensorflow.keras import layers
 from tensorflow.keras.callbacks import EarlyStopping
 
 import numpy as np
-from application.create_app import create_app
 from application.create_app.create_app import build_exe_with_class_names
 from application import config_paths
 from application.results.Result import Result
@@ -14,6 +13,7 @@ from application.ai_model_trainers.get_last_version import get_last_version_mode
 from application.services import data_storage_services
 from application.services.zip_archive_service import create_zip_archive
 from application.ai_models.ai_models import Model_Classification_Type, AI_Model_Type
+from application.create_app import AppLnn
 
 class LNN_Trainer:
     def __init__(            
@@ -99,10 +99,10 @@ class LNN_Trainer:
         if is_create_app:
             build_exe_with_class_names(
                 self.all_classes,
-                base_script_path=create_app.current_file_path,
+                base_script_path=AppLnn.current_file_path,
                 model_path=model_path,
-                exe_name="App.exe",
-                dist_path=trained_ai_model_folder_path)
+                dist_path=trained_ai_model_folder_path,
+                exe_name="App.exe")
 
         # Из всех обученных моделей со схожим именем выбираем самую новую модель
         _, latest_version = get_last_version_model(self.user_name, AI_Model_Type.LNN, trained_model_name)

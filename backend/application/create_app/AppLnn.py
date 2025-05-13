@@ -1,9 +1,26 @@
 import os
+import sys
 import tkinter as tk
 from tkinter import filedialog, messagebox, font
 import numpy as np
 from tensorflow.keras.models import load_model
 from PIL import Image
+
+current_file_path = __file__
+
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS  # путь внутри PyInstaller exe
+    except AttributeError:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
+
+def find_h5_model(directory):
+    # ищем любой .h5 файл в директории, возвращаем первый найденный или None
+    for filename in os.listdir(directory):
+        if filename.lower().endswith('.h5'):
+            return os.path.join(directory, filename)
+    return None
 
 class AppLnn:
     def __init__(self, root, class_names, file_extension, data_type):
@@ -25,9 +42,13 @@ class AppLnn:
         root.geometry(f"{window_width}x{window_height}+{x_cordinate}+{y_cordinate}")
         root.resizable(False, False)
 
-        # Получаем директорию скрипта
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        self.model_path = os.path.join(script_dir, 'model.h5')
+        # Получаем директорию, где лежит exe или скрипт
+        script_dir = resource_path(".")
+
+        # Ищем .h5 модель в той же директории
+        self.model_path = find_h5_model(script_dir)
+        if not self.model_path:
+            messagebox.showerror("Ошибка", f"Модель .h5 не найдена в директории:\n{script_dir}")
 
         self.model = None
         self.selected_file = None
@@ -63,7 +84,7 @@ class AppLnn:
 
     def load_model(self):
         if not self.model:
-            if not os.path.exists(self.model_path):
+            if not self.model_path or not os.path.exists(self.model_path):
                 messagebox.showerror("Ошибка", f"Модель не найдена: {self.model_path}")
                 return False
             self.model = load_model(self.model_path)
@@ -117,7 +138,7 @@ class AppLnn:
             messagebox.showerror("Ошибка", f"Ошибка при распознавании:\n{e}")
 
 if __name__ == "__main__":
-    class_names = ['шум', 'сигнал']
+    class_names = []  # заполняйте по необходимости
     file_extension = '.txt'
     data_type = 'text'
     root = tk.Tk()

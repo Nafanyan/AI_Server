@@ -89,7 +89,7 @@ def train_model():
       - name: is_create_app
         in: formData
         type: string
-        enum: ['yes', 'no']
+        enum: ['no', 'yes']
         required: true
         description: Стоит ли создавать приложение по обученной модели
     responses:
@@ -110,7 +110,8 @@ def train_model():
     trained_model_name = request.form.get('trained_model_name')
     train_percentage = int(request.form.get('train_percentage'))
     test_percentage = int(request.form.get('test_percentage'))
-    is_create_app = (bool)(request.form.get('is_create_app'))
+    
+    is_create_app = convert_param_is_create_app_to_bool((request.form.get('is_create_app')))
     
     try:
       trainer = LNN_Trainer(
@@ -215,7 +216,7 @@ def optimize_train_model():
       - name: is_create_app
         in: formData
         type: string
-        enum: ['yes', 'no']
+        enum: ['no', 'yes']
         required: true
         description: Стоит ли создавать приложение по обученной модели
     responses:
@@ -238,7 +239,7 @@ def optimize_train_model():
     activation_functions = request.form.get('activation_functions').split(',')
     optimizers = request.form.get('optimizers').split(',')
 
-    is_create_app = (bool)(request.form.get('is_create_app'))
+    is_create_app = convert_param_is_create_app_to_bool((request.form.get('is_create_app')))
 
     try:
         # Создаем экземпляр тренера с новыми параметрами
@@ -269,3 +270,7 @@ def optimize_train_model():
     except Exception as ex:
         print(ex)
         abort(500, "Произошла внутренняя ошибка сервера.")
+
+
+def convert_param_is_create_app_to_bool(is_create_app):
+   return is_create_app == True

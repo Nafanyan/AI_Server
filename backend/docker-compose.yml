@@ -1,0 +1,12 @@
+services:
+  app:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - /Users/ilaaleksandrov/Desktop/VKR/Project/Storage/Datasets:/app/Storage/Datasets
+      - /Users/ilaaleksandrov/Desktop/VKR/Project/Storage/Models:/app/Storage/Models
+    environment:
+      - FLASK_ENV=development
+    working_dir: /app
+    command: bash -c "source .venv/bin/activate && ./start.sh"

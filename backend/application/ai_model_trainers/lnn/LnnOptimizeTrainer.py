@@ -42,9 +42,6 @@ class LnnOptimizeTrainer:
         self.total_count = 0
 
     def optimize_train(self, trained_model_name, is_create_app):
-        self.best_trained_model = None
-        self.history = None
-        self.trainer = None
         self.test_loss = 1
         self.test_acc = 0
         num_layers = 0
@@ -72,11 +69,12 @@ class LnnOptimizeTrainer:
                     self.__iteration_for_optimizers(list(combo['neurons']), list(combo['activations']))
                     num_combo_neurons_activations += 1
                 num_layers += 1
+                
         except Exception as ex:
             log_message(ex)
         finally:
             log_message(f'Total count {self.total_count}')
-            return self.best_trained_model.save_model(trained_model_name, self.best_trained_model, self.history, is_create_app)
+            return self.trainer.save_model(trained_model_name, self.best_trained_model, self.history, is_create_app)
 
     def __iteration_for_optimizers(self, neurons_in_layers, activations):
         for optimizer in self.optimizers:
@@ -100,7 +98,7 @@ class LnnOptimizeTrainer:
                 self.dataset_name,
                 50,
                 25)
-            trained_model, history, test_loss, test_acc = trainer.train(self.trained_model_name)
+            trained_model, history, test_loss, test_acc = trainer.train()
 
             if (self.test_loss > test_loss and self.test_acc < test_acc):
                 self.trainer = trainer

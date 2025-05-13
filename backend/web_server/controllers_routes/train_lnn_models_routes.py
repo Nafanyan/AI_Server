@@ -6,18 +6,6 @@ from application.ai_model_trainers.lnn.LnnOptimizeTrainer import LnnOptimizeTrai
 from application.ai_models.AiModelNameConverter import AiModelNameConverter
 from application.ai_model_trainers.lnn.LnnTrainer import LNN_Trainer
 
-# Настройка модуля логирования
-logging.basicConfig(
-    filename='app.log',      # Имя файла журнала
-    filemode='a',            # Открытие файла для добавления записей ('w' — перезапись)
-    format='%(asctime)s %(levelname)-8s %(message)s',
-    level=logging.error,
-    datefmt='%Y-%m-%d %H:%M:%S'
-)
-
-def log_message(message):
-    logging.error(message)
-
 train_lnn_models_bp = Blueprint(
     'train-lnn-model',
     __name__,
@@ -147,7 +135,7 @@ def train_model():
         as_attachment=True,
         download_name=os.path.basename(trained_model.result))
     except Exception as ex:
-      log_message(ex)
+      print(ex)
       abort(500, "Произошла внутренняя ошибка сервера.")
 
 
@@ -264,7 +252,6 @@ def optimize_train_model():
             optimizers=optimizers,
             user_name=user_name,
             dataset_name=dataset_name,
-            trained_model_name=trained_model_name,
         )
         
         # Запускаем обучение
@@ -280,5 +267,5 @@ def optimize_train_model():
             download_name=os.path.basename(trained_model.result))
 
     except Exception as ex:
-        log_message(ex)
+        print(ex)
         abort(500, "Произошла внутренняя ошибка сервера.")

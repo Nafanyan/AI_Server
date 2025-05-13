@@ -46,12 +46,3 @@ def build_exe_with_class_names(class_names, base_script_path, model_path, dist_p
             print("Ошибка при сборке:")
             print(result.stdout)
             print(result.stderr)
-
-# Пример вызова (раскомментируйте и укажите пути под вашу ОС):
-# build_exe_with_class_names(
-#     ['noise', 'signal'], 
-#     '/path/to/your/AppLnn.py', 
-#     '/path/to/your/Dinar_model.h5',
-#     '/path/to/dist/folder',
-#     'App' + ('.exe' if sys.platform.startswith('win') else '')
-# )

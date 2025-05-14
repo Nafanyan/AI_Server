@@ -41,6 +41,7 @@ def train_model():
         type: array
         items:
           type: integer
+        required: true
         description: Количество нейронов в каждом слое без учета выходного слоя
       - name: activations
         in: formData
@@ -110,8 +111,8 @@ def train_model():
     trained_model_name = request.form.get('trained_model_name')
     train_percentage = int(request.form.get('train_percentage'))
     test_percentage = int(request.form.get('test_percentage'))
-    
-    is_create_app = convert_param_is_create_app_to_bool((request.form.get('is_create_app')))
+
+    is_create_app = convert_param_is_create_app_to_bool(request.form.get('is_create_app'))
     
     try:
       trainer = LNN_Trainer(
@@ -136,8 +137,7 @@ def train_model():
         as_attachment=True,
         download_name=os.path.basename(trained_model.result))
     except Exception as ex:
-      print(ex)
-      abort(500, "Произошла внутренняя ошибка сервера.")
+        abort(500, ex)
 
 
 @train_lnn_models_bp.route('/optimize-train', methods=['POST'])
@@ -239,7 +239,7 @@ def optimize_train_model():
     activation_functions = request.form.get('activation_functions').split(',')
     optimizers = request.form.get('optimizers').split(',')
 
-    is_create_app = convert_param_is_create_app_to_bool((request.form.get('is_create_app')))
+    is_create_app = convert_param_is_create_app_to_bool(request.form.get('is_create_app'))
 
     try:
         # Создаем экземпляр тренера с новыми параметрами
@@ -268,9 +268,7 @@ def optimize_train_model():
             download_name=os.path.basename(trained_model.result))
 
     except Exception as ex:
-        print(ex)
-        abort(500, "Произошла внутренняя ошибка сервера.")
-
+        abort(500, ex)
 
 def convert_param_is_create_app_to_bool(is_create_app):
-   return is_create_app == True
+   return is_create_app == 'yes'

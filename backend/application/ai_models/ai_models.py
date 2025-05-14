@@ -26,9 +26,3 @@ class AI_Model_Type():
 
         trained_model_name_for_save = f'{trained_model_name}_{datetime.now().strftime("%Y-%m-%d-%H-%M-%S")}'.replace(' ', '')
         return f'{config_paths.get_models_folder_path(user_name, ai_model_type_string)}/{trained_model_name_for_save}'
-    
-
-
-
-
-

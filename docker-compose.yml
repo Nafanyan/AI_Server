@@ -6,9 +6,10 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - /Users/ilaaleksandrov/Desktop/VKR/Project/Storage/Datasets:/app/Storage/Datasets
-      - /Users/ilaaleksandrov/Desktop/VKR/Project/Storage/Models:/app/Storage/Models
+      - ./../AI_Storage/Datasets:/backend/Storage/Datasets
+      - ./../AI_Storage/Models:/backend/Storage/Models
     environment:
-      - FLASK_ENV=development
-    working_dir: /app
+      - FLASK_ENV=prod
+      - ENVIRONMENT=prod
+    working_dir: /backend
     command: bash -c "source .venv/bin/activate && ./start.sh"

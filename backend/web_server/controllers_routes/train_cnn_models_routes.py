@@ -155,8 +155,7 @@ def train_model():
         as_attachment=True,
         download_name=os.path.basename(trained_model.result))
     except Exception as ex:
-      print(ex)
-      abort(500, "Произошла внутренняя ошибка сервера.")
+        abort(500, ex)
 
 @train_cnn_models_bp.route('/train/yolo5', methods=['POST'])
 def train_model_yolo5():
@@ -254,5 +253,4 @@ def train_model_yolo5():
         as_attachment=True,
         download_name=os.path.basename(trained_model.result))
     except Exception as ex:
-      print(ex)
-      abort(500, "Произошла внутренняя ошибка сервера.")
+        abort(500, ex)

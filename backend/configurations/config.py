@@ -22,4 +22,4 @@ def __get_config():
         with open(config_path, 'r') as file:
             return json.load(file)
     except FileNotFoundError:
-        raise Exception(f'Не найден файл конфигурации {config_file_name}')
+        raise Exception(f'Не найден файл конфигурации {config_file_name}: {config_path}')

@@ -5,7 +5,7 @@ RUN apt-get update && \
     add-apt-repository universe && \
     apt-get update && \
     apt-get upgrade -y && \
-    apt-get install -y build-essential wget curl git python3.12 python3.12-venv python3-pip dos2unix libgl1
+    apt-get install -y build-essential wget curl git python3.12 python3.12-venv python3-pip dos2unix libgl1 python3-tk
 
 COPY ./ /backend
 WORKDIR /backend
@@ -15,4 +15,4 @@ RUN chmod +x setup_mac_linux.sh start.sh
 
 RUN ./setup_mac_linux.sh
 
-CMD ["bash", "-c", "source .venv/bin/activate && ./start.sh"]
+CMD ["./start.sh"]

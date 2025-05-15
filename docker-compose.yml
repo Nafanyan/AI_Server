@@ -12,4 +12,4 @@ services:
       - FLASK_ENV=prod
       - ENVIRONMENT=prod
     working_dir: /backend
-    command: bash -c "source .venv/bin/activate && ./start.sh"
+    command: ./start.sh

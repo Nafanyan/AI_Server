@@ -10,6 +10,22 @@ def create_app():
     routes.init_routes(app)
 
     # Инициализация Swagger после регистрации Blueprint
+
+    template = {
+        "swagger": "2.0",
+        "info": {
+            "title": "AI Server",
+            "version": "1.0"
+        },
+        "tags": [
+            {"name": "1. Загрузка Dataset'a для обучения"},
+            {"name": "2.1 Обучение линейной модели нейронной сети (LNN)"},
+            {"name": "2.2 Обучение сверточной модели нейронной сети (CNN)"},
+            {"name": "3. Дополнительные действия с dataset'ами"},
+            {"name": "4. Дополнительные действия с моделями"},
+        ]
+    }
+
     swagger_config = {
         "headers": [],
         "specs": [
@@ -22,10 +38,10 @@ def create_app():
         ],
         "static_url_path": "/flasgger_static",
         "swagger_ui": True,
-        "specs_route": "/api/doc/"
-        }
+        "specs_route": "/api/doc/",
+    }
     
-    swagger = Swagger(app, config=swagger_config)
+    swagger = Swagger(app, template=template, config=swagger_config)
 
     return app
 

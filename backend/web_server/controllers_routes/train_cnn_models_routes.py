@@ -1,4 +1,3 @@
-import logging
 import os
 from flask import Blueprint, abort, request, jsonify, send_file
 
@@ -19,7 +18,7 @@ def train_model():
     Обучение сверточной модели нейронной сети
     ---
     tags:
-      - Training CNN
+      - 2.2 Обучение сверточной модели нейронной сети (CNN)
     parameters:
       - name: ai_model
         in: formData
@@ -163,7 +162,7 @@ def train_model_yolo5():
     Обучение сверточной модели нейронной сети YOLO5
     ---
     tags:
-      - Training CNN
+      - 2.2 Обучение сверточной модели нейронной сети (CNN)
     parameters:
       - name: ai_model
         in: formData

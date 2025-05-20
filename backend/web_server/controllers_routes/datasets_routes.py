@@ -12,10 +12,45 @@ datasets_bp = Blueprint(
 @datasets_bp.route('/save-and-extract', methods=['POST'])
 def save_and_extract_dataset():
     """
-    Загрузить и разархивировать ZIP-архив датасета.
+    Загрузка dataset в систему
     ---
     tags:
-      - Dataset
+      - 1. Загрузка Dataset'a для обучения
+    description: |
+      # Инструкция по загрузке данных
+
+      - При загрузке необходимо указать **свой username**, так как для каждого пользователя выделено отдельное пространство в памяти.
+
+      - Загрузите архив в формате **.zip**.
+
+      ---
+
+      ## Требования к файлам для обучения
+
+      ### Линейная нейронная сеть
+
+      - Файлы должны быть в формате **.txt**.
+      - Формат данных должен соотвествовать следующей структуре:
+      ![Пример структуры данных для LNN](/static/cnn_data.jpg)
+
+      ### Сверточная нейронная сеть
+
+      - Изображения должны быть в формате **.jpg**.
+      ![Пример данных для CNN](/static/lnn_data.jpg)
+
+      ### Сверточная нейронная сеть YOLO5
+
+      - Для YOLO5 должен использоваться специальный формат данных YOLO v5 PyTorch
+
+      ---
+
+      ## Организация размеченных данных
+
+      - Размеченные данные должны находиться в директориях с названиями классов, к которым они принадлежат.
+
+      - Пример структуры папок:
+      ![Пример разделения классов](/static/class_structure.jpg)
+
     parameters:
       - name: user_name
         in: query
@@ -27,23 +62,6 @@ def save_and_extract_dataset():
         type: file
         required: true
         description: Файл для загрузки.
-    responses:
-      200:
-        description: Успешная операция.
-        schema:
-          type: object
-          properties:
-            message:
-              type: string
-              example: File uploaded successfully.
-      400:
-        description: Ошибка валидации.
-        schema:
-          type: object
-          properties:
-            error:
-              type: string
-              example: Invalid input data.
     """
     user_name = request.args.get('user_name')
     if not user_name:
@@ -67,10 +85,10 @@ def save_and_extract_dataset():
 @datasets_bp.route('/<string:user_name>', methods=['GET'])
 def get_names(user_name):
     """
-    Операции с именем датасета.
+    Получить список названий датасетов, доступных пользователю.
     ---
     tags:
-      - Dataset
+      - 3. Дополнительные действия с dataset'ами
     parameters:
       - name: user_name
         in: path
@@ -82,19 +100,6 @@ def get_names(user_name):
         type: string
         required: true
         description: Имя датасета.
-    responses:
-      200:
-        description: Информация о датасете.
-      204:
-        description: Датасет успешно удален.
-      404:
-        description: Датасет не найден.
-        schema:
-          type: object
-          properties:
-            error:
-              type: string
-              example: Dataset not found.
     """
     if not user_name:
         return jsonify({'message': 'user_name is required'}), 404
@@ -111,7 +116,7 @@ def dataset_name_operations(user_name, dataset_name):
     Операции с именем датасета.
     ---
     tags:
-      - Dataset
+      - 3. Дополнительные действия с dataset'ами
     parameters:
       - name: user_name
         in: path
@@ -123,19 +128,7 @@ def dataset_name_operations(user_name, dataset_name):
         type: string
         required: true
         description: Имя датасета.
-    responses:
-      200:
-        description: Информация о датасете.
-      204:
-        description: Датасет успешно удален.
-      404:
-        description: Датасет не найден.
-        schema:
-          type: object
-          properties:
-            error:
-              type: string
-              example: Dataset not found.
+    
     """
     if not user_name:
       return jsonify({'message': 'user_name is required'}), 400

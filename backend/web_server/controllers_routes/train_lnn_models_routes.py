@@ -1,4 +1,3 @@
-import logging
 import os
 from flask import Blueprint, abort, request, jsonify, send_file
 
@@ -18,7 +17,7 @@ def train_model():
     Обучение линейной модели нейронной сети
     ---
     tags:
-      - Training LNN
+      - 2.1 Обучение линейной модели нейронной сети (LNN)
     parameters:
       - name: ai_model
         in: formData
@@ -146,7 +145,7 @@ def optimize_train_model():
     Поиск наилучшей обученной модели в заданном периоде параметров
     ---
     tags:
-      - Training LNN
+      - 2.1 Обучение линейной модели нейронной сети (LNN)
     parameters:
       - name: ai_model
         in: formData

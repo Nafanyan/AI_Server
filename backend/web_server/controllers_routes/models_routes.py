@@ -13,10 +13,10 @@ models_bp = Blueprint(
 @models_bp.route('/save-and-extract', methods=['POST'])
 def save_and_extract_model():
     """
-    Загрузить и разархивироватьZIP-архив модели.
+    Загрузить и разархивировать ZIP-архив модели.
     ---
     tags:
-      - Model
+      - 4. Дополнительные действия с моделями
     parameters:
       - name: user_name
         in: query
@@ -86,7 +86,7 @@ def get_names(user_name, model_type):
     Получение списка имен моделей для определенного типа.
     ---
     tags:
-      - Model
+      - 4. Дополнительные действия с моделями
     parameters:
       - name: user_name
         in: path
@@ -99,23 +99,7 @@ def get_names(user_name, model_type):
         enum: [0, 1]
         default: 0
         required: true
-        description: Тип обученной модели. 0 - CNN, 1 - linear
-    responses:
-      200:
-        description: Список имен моделей.
-        schema:
-          type: array
-          items:
-            type: string
-          example: ["model1", "model2"]
-      404:
-        description: Пользователь не найден.
-        schema:
-          type: object
-          properties:
-            error:
-              type: string
-              example: User not found.
+        description: Тип обученной модели. 0 - CNN, 1 - LNN
     """
     if not user_name:
         return jsonify({'message': 'user_name is required'}), 404
@@ -139,7 +123,7 @@ def model_name_operations(user_name, model_type, model_name):
     Операции с именем модели.
     ---
     tags:
-      - Model
+      - 4. Дополнительные действия с моделями
     parameters:
       - name: user_name
         in: path

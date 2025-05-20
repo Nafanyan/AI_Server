@@ -1,0 +1,15 @@
+services:
+  app:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./../AI_Storage/Datasets:/backend/Storage/Datasets
+      - ./../AI_Storage/Models:/backend/Storage/Models
+    environment:
+      - FLASK_ENV=prod
+      - ENVIRONMENT=prod
+    working_dir: /backend
+    command: ./start.sh

@@ -28,11 +28,10 @@ if [ -d "./yolov5" ]; then
     echo "YOLOv5 уже установлена."
 else
     git clone https://github.com/ultralytics/yolov5.git || { echo "Ошибка клонирования репозитория YOLOv5"; exit 1; }
-    cd yolov5 || { echo "Ошибка перехода в каталог yolov5"; exit 1; }
-    pip install -r requirements.txt || { echo "Ошибка установки зависимостей YOLOv5"; exit 1; }
-    cd .. || { echo "Ошибка возврата в родительский каталог"; exit 1; }
 fi
 
-# Запускаем основной сценарий
+cd yolov5 || { echo "Ошибка перехода в каталог yolov5"; exit 1; }
+pip install -r requirements.txt || { echo "Ошибка установки зависимостей YOLOv5"; exit 1; }
+cd .. || { echo "Ошибка возврата в родительский каталог"; exit 1; }
+
 echo "Виртуальная среда настроена успешно!"
-./start.sh

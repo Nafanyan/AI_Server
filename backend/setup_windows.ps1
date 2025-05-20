@@ -24,10 +24,11 @@ if (Test-Path './yolov5') {
     Write-Host "YOLOv5 уже установлена."
 } else {
     git clone https://github.com/ultralytics/yolov5.git
-    Set-Location yolov5
-    pip install -r requirements.txt
-    Set-Location ..
 }
+
+Set-Location yolov5
+pip install -r requirements.txt
+Set-Location ..
 
 Write-Host "Виртуальная среда настроена успешно!"
 Set-Location ..\..\ 
